@@ -1,0 +1,198 @@
+<!DOCTYPE html >
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>State Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js"></script>
+    <style>
+        #select{
+            color:blueviolet;
+            background-color: white;
+        }
+        #form-control-label{
+            font-weight: bold;
+            color:mediumvioletred;
+        }
+
+        .container{
+        border: hidden;
+        margin:90px;
+        padding:10px;
+        padding-top: 0px;
+        float:left;
+        margin-top: 10px;
+        }
+
+        #myChart{
+            margin-left: 20%;
+        }
+
+        .form-group{
+            padding-left:16%;
+        }
+
+
+        #parent_div_1,
+        #parent_div_2,
+        #parent_div_3 {
+        width: 200px;
+        height: 200px;
+        border: 1px solid blue;
+        margin-right: 20px;
+        float: left;
+        }
+
+        .boxcontent{
+            padding: 15px;
+            padding-left: 15%;
+        }
+
+        .title {
+        margin-right: 5px;
+        margin-top:8px;
+        text-align: center;
+        font-weight:bolder;
+        padding-top:4px;
+        }
+
+    </style>
+    <script >
+        
+        function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    var cases = {{ count| tojson }}
+    var casesTimeline = {{ cases_timeline| tojson}}
+    var timeline = {{ date_timeline| tojson }}
+    </script>
+
+</head>
+<body>
+    <form method="POST" action="" style="margin-top: 50px;">
+            {{ form.hidden_tag() }}
+            {{ form.csrf_token }}
+            <fieldset class="form-group">
+                <legend class="" style="padding-left:20%;"><img src = "{{ url_for('static',filename='images/covid_logo.png')}}"  style="height:250px;"></legend>
+                <br>
+                <div class="form-group" style="padding-top: 20px ;">
+                    {{ form.state.label(class="form-control-label") }}&nbsp;
+                    {{ form.state(class="btn btn-info dropdown-toggle",id = "select",onchange='this.form.submit()') }}
+                </div>
+                <!-- <div>{{ form.submit }}</div>     -->
+            </fieldset>
+    </form>
+
+    <br>
+
+    <div class="container" style="margin-left:25%;">
+
+        <div id='parent_div_1'>
+          <div class='title' style="color: dodgerblue;">Confirmed</div>
+          {% if count["confirmed"] != 0%}      
+          <div class="boxcontent">
+              <h5 id='count1'>{{count["confirmed"]}}</h5>
+              <p style="color: slategray;">Last Updated: {{updated_date[0:10]   }}</p>
+              <p>Total No of Covid Cases</p>
+
+            </div>
+          {% endif%}
+        </div>
+      
+        <div id='parent_div_2' class="border border-success">
+          <div class='title' style="color:yellowgreen;">Active</div>
+          <div class="boxcontent">
+              <h5 id='count2'>{{count["active"]}}</h5>
+              <p style="color: slategray;">Last Updated: {{updated_date[0:10]}}</p>
+              <p> Active no of Cvoid Cases</p>
+
+          </div>
+        </div>
+      
+        <div id='parent_div_3' class="border border-danger">
+          <div class='title' style="color: indianred;">Deaths</div>
+          <div class="boxcontent">
+              <h5 id='count3'>{{count["deaths"]}}</h5>
+              <p style="color: slategray;">Last Updated: {{updated_date[0:10]}}</p>
+              <p>Deaths due to Covid-19</p>
+          </div>
+        </div>
+    </div>  
+    <canvas id="myChart" width="800" height="800" style="float:none"></canvas>
+    
+    <script>
+        
+        document.getElementById('count1').innerHTML = numberWithCommas(cases['confirmed'])
+        document.getElementById('count2').innerHTML = numberWithCommas(cases['active'])
+        document.getElementById('count3').innerHTML = numberWithCommas(cases['deaths'])
+    
+        var choice = document.getElementById('select').value
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var cltx = document.getElementById('myChart').getContext('2d');
+        if (choice !='Total') {
+        var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Total', 'Active', 'Deaths'],
+            datasets: [{
+                label: 'Cases',
+                data: [cases["confirmed"], cases["active"], cases["deaths"]],
+                backgroundColor: [
+                    'mediumslateblue',
+                    'yellowgreen',
+                    'crimson'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+        
+            responsive: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+            
+
+                }]
+            },
+            
+        }
+    });
+
+    }
+    else{
+        var myLineChart = new Chart(cltx, {
+        type: 'line',
+        data: {
+            labels: timeline,
+            datasets: [
+            {
+                label: "Spread of Virus",
+                data: casesTimeline,
+                borderColor:'blueviolet'
+            }
+            ]
+        },
+        options: {  
+        responsive: false,
+        }
+
+    });
+
+    }
+
+    </script> 
+
+</body>
+</html>
+
