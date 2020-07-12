@@ -38,7 +38,7 @@ def home():
     stateform = SelectState()
     stateform.state.choices = state_list
     state = stateform.state.data
-    print(f'check2{state}')
+    # print(f'check2{state}')
 
     for j in state_list:
         if state == j:
