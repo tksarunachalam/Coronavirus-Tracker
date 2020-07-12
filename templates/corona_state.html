@@ -101,7 +101,7 @@
             {{ form.hidden_tag() }}
             {{ form.csrf_token }}
             <fieldset class="form-group">
-                <legend class="logo" style="padding-left:20%;"><img src = "{{ url_for('static',filename='images/covid_logo.png')}}" id = "covid" style="height:250px;"></legend>
+                <legend class="logo" style="padding-left:20%;"><img src = "{{ url_for('static',filename='img/covid_logo.png')}}" id = "covid" style="height:250px;"></legend>
                 <br>
                 <div class="form-group" style="padding-top: 20px ;">
                     {{ form.state.label(class="form-control-label") }}&nbsp;
@@ -147,7 +147,7 @@
         </div>
     </div>  
     <canvas id="myChart" width="800" height="800" style="float:none"></canvas>
-    <div style="text-align: center;color:lightslategray;">With<img src="{{ url_for('static',filename='images/stayhome_love.png')}}" width="5%" height="5%" >Tks Arunachalam</div>
+    <div style="text-align: center;color:lightslategray;">With<img src="{{ url_for('static',filename='img/stayhome_love.png')}}" width="5%" height="5%" >Tks Arunachalam</div>
   
     <script>
         
