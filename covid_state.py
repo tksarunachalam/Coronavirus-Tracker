@@ -52,7 +52,7 @@ def home():
         count['active'] = response.get('statewise')[i]["active"]
         count['deaths'] = response.get('statewise')[i]["deaths"]
         count['updated_date'] = response.get('statewise')[i]["lastupdatedtime"]
-
+        
     return render_template('corona_state.html',form = stateform, count = count, updated_date = count['updated_date'],cases_timeline = daily_cases_timeline, date_timeline = daily_cases_timeline_date )
 
 

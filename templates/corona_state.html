@@ -2,12 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" /> 
+    
     <title>State Details</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-
+   
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js"></script>
-    <style>
+    
+    <script>
+        function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        var cases = {{ count| tojson }}
+        var casesTimeline = {{ cases_timeline| tojson}}
+        var timeline = {{ date_timeline| tojson }}
+
+    </script>
+
+    <style>    
         #select{
             color:blueviolet;
             background-color: white;
@@ -57,26 +71,37 @@
         font-weight:bolder;
         padding-top:4px;
         }
+    
+    @media screen and (min-width: 319px) and (max-width: 480px) {
+    /* comes into effect for screens between 319 and 480 pixels (inclusive) */
+    #myChart{
+        width:97% !important;
+        height: 380px !important;
+        margin-left: 1% !important;
+        }
+    .form-group, .logo{
+        padding-left:1% !important;
+        }
+    #covid{
+        width: 100% !important;
 
-    </style>
-    <script >
-        
-        function numberWithCommas(x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    .container{
+        padding-left:3% !important;
+        margin-left:2% !important;
     }
 
-    var cases = {{ count| tojson }}
-    var casesTimeline = {{ cases_timeline| tojson}}
-    var timeline = {{ date_timeline| tojson }}
-    </script>
+}
 
+
+    </style>
 </head>
 <body>
     <form method="POST" action="" style="margin-top: 50px;">
             {{ form.hidden_tag() }}
             {{ form.csrf_token }}
             <fieldset class="form-group">
-                <legend class="" style="padding-left:20%;"><img src = "{{ url_for('static',filename='images/covid_logo.png')}}"  style="height:250px;"></legend>
+                <legend class="logo" style="padding-left:20%;"><img src = "{{ url_for('static',filename='images/covid_logo.png')}}" id = "covid" style="height:250px;"></legend>
                 <br>
                 <div class="form-group" style="padding-top: 20px ;">
                     {{ form.state.label(class="form-control-label") }}&nbsp;
@@ -94,7 +119,7 @@
           <div class='title' style="color: dodgerblue;">Confirmed</div>
           {% if count["confirmed"] != 0%}      
           <div class="boxcontent">
-              <h5 id='count1'>{{count["confirmed"]}}</h5>
+              <h5 id='count1' >{{count["confirmed"]}}</h5>
               <p style="color: slategray;">Last Updated: {{updated_date[0:10]   }}</p>
               <p>Total No of Covid Cases</p>
 
@@ -105,7 +130,7 @@
         <div id='parent_div_2' class="border border-success">
           <div class='title' style="color:yellowgreen;">Active</div>
           <div class="boxcontent">
-              <h5 id='count2'>{{count["active"]}}</h5>
+              <h5 id='count2' >{{count["active"]}}</h5>
               <p style="color: slategray;">Last Updated: {{updated_date[0:10]}}</p>
               <p> Active no of Cvoid Cases</p>
 
@@ -115,23 +140,26 @@
         <div id='parent_div_3' class="border border-danger">
           <div class='title' style="color: indianred;">Deaths</div>
           <div class="boxcontent">
-              <h5 id='count3'>{{count["deaths"]}}</h5>
+              <h5 id='count3' >{{count["deaths"]}}</h5>
               <p style="color: slategray;">Last Updated: {{updated_date[0:10]}}</p>
               <p>Deaths due to Covid-19</p>
           </div>
         </div>
     </div>  
     <canvas id="myChart" width="800" height="800" style="float:none"></canvas>
-    
+    <div style="text-align: center;color:lightslategray;">With<img src="{{ url_for('static',filename='images/stayhome_love.png')}}" width="5%" height="5%" >Tks Arunachalam</div>
+  
     <script>
         
         document.getElementById('count1').innerHTML = numberWithCommas(cases['confirmed'])
         document.getElementById('count2').innerHTML = numberWithCommas(cases['active'])
         document.getElementById('count3').innerHTML = numberWithCommas(cases['deaths'])
-    
+
         var choice = document.getElementById('select').value
         var ctx = document.getElementById('myChart').getContext('2d');
         var cltx = document.getElementById('myChart').getContext('2d');
+        
+        // For All States Bar graph
         if (choice !='Total') {
         var myChart = new Chart(ctx, {
         type: 'bar',
@@ -170,6 +198,7 @@
     });
 
     }
+    // For Overall Stats Line Graph 
     else{
         var myLineChart = new Chart(cltx, {
         type: 'line',
