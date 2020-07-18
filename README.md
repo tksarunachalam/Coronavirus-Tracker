@@ -9,3 +9,5 @@ To run the app in your system
 - python covid_state.py
 - visit http://127.0.0.1:5000/ or http://localhost:5000/
 
+#
+<img src = "https://github.com/tksaunachalam/Coronavirus-Tracker/blob/master/static/img/my%20india-coronavirus-tracker.png" height="px">
